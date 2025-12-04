@@ -1,12 +1,23 @@
 package com.salesianostriana.dam.tarea04_12.model;
 
+
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "citas_medicas")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CitaMedica {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,103 +31,34 @@ public class CitaMedica {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @Builder.Default
     private EstadoCita estado = EstadoCita.PROGRAMADA;
 
-    @Column(name = "diagnostico", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String diagnostico;
 
-    @Column(name = "prescripcion", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String prescripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Paciente paciente;
 
-    // Constructores
-    public CitaMedica() {
+    public enum EstadoCita {
+        PROGRAMADA, CONFIRMADA, COMPLETADA, CANCELADA, NO_ASISTIO
     }
 
-    public CitaMedica(LocalDateTime fechaCita, String motivo) {
-        this.fechaCita = fechaCita;
-        this.motivo = motivo;
-    }
-
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getFechaCita() {
-        return fechaCita;
-    }
-
-    public void setFechaCita(LocalDateTime fechaCita) {
-        this.fechaCita = fechaCita;
-    }
-
-    public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
-
-    public EstadoCita getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoCita estado) {
-        this.estado = estado;
-    }
-
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
-    }
-
-    public String getPrescripcion() {
-        return prescripcion;
-    }
-
-    public void setPrescripcion(String prescripcion) {
-        this.prescripcion = prescripcion;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public Paciente getPaciente() {
-        return paciente;
-    }
-
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
-
-
+    @Transient
     public boolean esHoy() {
         return fechaCita.toLocalDate().equals(LocalDate.now());
-    }
-
-    public boolean esFutura() {
-        return fechaCita.isAfter(LocalDateTime.now());
     }
 
     public void completarCita(String diagnostico, String prescripcion) {
@@ -125,8 +67,19 @@ public class CitaMedica {
         this.estado = EstadoCita.COMPLETADA;
     }
 
-    // Enum para estado de la cita
-    public enum EstadoCita {
-        PROGRAMADA, CONFIRMADA, COMPLETADA, CANCELADA, NO_ASISTIO
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        CitaMedica that = (CitaMedica) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

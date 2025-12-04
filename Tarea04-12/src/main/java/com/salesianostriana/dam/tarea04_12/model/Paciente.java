@@ -1,7 +1,25 @@
 package com.salesianostriana.dam.tarea04_12.model;
 
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Entity
 @Table(name = "pacientes")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,52 +40,30 @@ public class Paciente {
     private String alergias;
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CitaMedica> citas = new ArrayList<>();
 
-    // Constructores
-    public Paciente() {}
-
-    public Paciente(String nombre, String dni, LocalDate fechaNacimiento) {
-        this.nombre = nombre;
-        this.dni = dni;
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
-
-    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
-    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
-
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public String getAlergias() { return alergias; }
-    public void setAlergias(String alergias) { this.alergias = alergias; }
-
-    public List<CitaMedica> getCitas() { return citas; }
-    public void setCitas(List<CitaMedica> citas) { this.citas = citas; }
-
-    // Métodos helper
-    public void agregarCita(CitaMedica cita) {
-        citas.add(cita);
-        cita.setPaciente(this);
-    }
-
-    public void eliminarCita(CitaMedica cita) {
-        citas.remove(cita);
-        cita.setPaciente(null);
-    }
-
-    // Calcular edad
+    @Transient
     public int getEdad() {
+        if (fechaNacimiento == null) return 0;
         return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Paciente paciente = (Paciente) o;
+        return getId() != null && Objects.equals(getId(), paciente.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

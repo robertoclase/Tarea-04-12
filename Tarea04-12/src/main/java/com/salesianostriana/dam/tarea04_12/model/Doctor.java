@@ -1,7 +1,23 @@
 package com.salesianostriana.dam.tarea04_12.model;
 
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Entity
 @Table(name = "doctores")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,47 +32,33 @@ public class Doctor {
     @Column(unique = true, length = 10)
     private String licencia;
 
+    @Builder.Default
     private boolean activo = true;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CitaMedica> citas = new ArrayList<>();
 
-    // Constructores
-    public Doctor() {}
-
-    public Doctor(String nombre, String especialidad, String licencia) {
-        this.nombre = nombre;
-        this.especialidad = especialidad;
-        this.licencia = licencia;
-    }
-
-    // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
-
-    public String getLicencia() { return licencia; }
-    public void setLicencia(String licencia) { this.licencia = licencia; }
-
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
-
-    public List<CitaMedica> getCitas() { return citas; }
-    public void setCitas(List<CitaMedica> citas) { this.citas = citas; }
-
-    // Métodos helper para la relación
     public void agregarCita(CitaMedica cita) {
         citas.add(cita);
         cita.setDoctor(this);
     }
 
-    public void eliminarCita(CitaMedica cita) {
-        citas.remove(cita);
-        cita.setDoctor(null);
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Doctor doctor = (Doctor) o;
+        return getId() != null && Objects.equals(getId(), doctor.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
