@@ -1,12 +1,10 @@
 package com.salesianostriana.dam.tarea04_12.repository;
 
+import com.salesianostriana.dam.tarea04_12.model.Doctor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    List<Doctor> findByEspecialidad(String especialidad);
-    Optional<Doctor> findByLicencia(String licencia);
-    List<Doctor> findByActivoTrue();
-    List<Doctor> findByNombreContainingIgnoreCase(String nombre);
 
-    @Query("SELECT d FROM Doctor d WHERE SIZE(d.citas) > :minCitas")
-    List<Doctor> findDoctoresConMasDeXCitas(@Param("minCitas") int minCitas);
 }

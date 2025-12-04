@@ -52,14 +52,11 @@ public class CitaMedica {
     @EqualsAndHashCode.Exclude
     private Paciente paciente;
 
-    public enum EstadoCita {
-        PROGRAMADA, CONFIRMADA, COMPLETADA, CANCELADA, NO_ASISTIO
-    }
-
-    @Transient
     public boolean esHoy() {
         return fechaCita.toLocalDate().equals(LocalDate.now());
     }
+
+    @Transient
 
     public void completarCita(String diagnostico, String prescripcion) {
         this.diagnostico = diagnostico;
@@ -81,5 +78,9 @@ public class CitaMedica {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public enum EstadoCita {
+        PROGRAMADA, CONFIRMADA, COMPLETADA, CANCELADA, NO_ASISTIO
     }
 }

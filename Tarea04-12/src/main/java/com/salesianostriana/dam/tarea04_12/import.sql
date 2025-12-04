@@ -1,9 +1,3 @@
--- Insertar doctores
-INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dr. Juan Pérez', 'Cardiología', 'LIC12345', true);
-INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dra. María García', 'Pediatría', 'LIC67890', true);
-INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dr. Carlos López', 'Dermatología', 'LIC11223', true);
-INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dra. Ana Martínez', 'Ginecología', 'LIC44556', false);
-
 -- Insertar pacientes
 INSERT INTO pacientes (nombre, dni, fecha_nacimiento, telefono, alergias) VALUES ('Laura González', '12345678A', '1985-05-15', '611111111', 'Penicilina');
 INSERT INTO pacientes (nombre, dni, fecha_nacimiento, telefono, alergias) VALUES ('Pedro Sánchez', '87654321B', '1990-08-22', '622222222', 'Mariscos');
@@ -20,6 +14,10 @@ INSERT INTO citas_medicas (fecha_cita, motivo, estado, doctor_id, paciente_id) V
 INSERT INTO citas_medicas (fecha_cita, motivo, estado, doctor_id, paciente_id) VALUES ('2024-02-20 08:45:00', 'Segunda opinión', 'CANCELADA', 1, 1);
 INSERT INTO citas_medicas (fecha_cita, motivo, estado, doctor_id, paciente_id) VALUES ('2024-02-22 14:30:00', 'Chequeo preoperatorio', 'PROGRAMADA', 1, 3);
 
--- Actualizar algunas citas con diagnóstico y prescripción
 UPDATE citas_medicas SET diagnostico = 'Hipertensión controlada, continuar tratamiento', prescripcion = 'Tomar medicación diaria y dieta baja en sal' WHERE id = 1;
 UPDATE citas_medicas SET diagnostico = 'Angina de pecho, requiere más estudios', prescripcion = 'Reposo y cita para electrocardiograma' WHERE id = 2;
+
+INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dr. Juan Pérez', 'Cardiología', 'LIC12345', true);
+INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dra. María García', 'Pediatría', 'LIC67890', true);
+INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dr. Carlos López', 'Dermatología', 'LIC11223', true);
+INSERT INTO doctores (nombre, especialidad, licencia, activo) VALUES ('Dra. Ana Martínez', 'Ginecología', 'LIC44556', false);
